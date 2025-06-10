@@ -9,6 +9,59 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      bikes: {
+        Row: {
+          available: boolean
+          battery_level: number | null
+          created_at: string
+          description: string | null
+          features: string[] | null
+          id: string
+          image_url: string | null
+          location_id: string | null
+          name: string
+          price_per_hour: number
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          available?: boolean
+          battery_level?: number | null
+          created_at?: string
+          description?: string | null
+          features?: string[] | null
+          id?: string
+          image_url?: string | null
+          location_id?: string | null
+          name: string
+          price_per_hour: number
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          available?: boolean
+          battery_level?: number | null
+          created_at?: string
+          description?: string | null
+          features?: string[] | null
+          id?: string
+          image_url?: string | null
+          location_id?: string | null
+          name?: string
+          price_per_hour?: number
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_bikes_location"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categories: {
         Row: {
           description: string | null
@@ -27,6 +80,77 @@ export type Database = {
           id?: number
           name?: string
           slug?: string
+        }
+        Relationships: []
+      }
+      favorites: {
+        Row: {
+          bike_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          bike_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          bike_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favorites_bike_id_fkey"
+            columns: ["bike_id"]
+            isOneToOne: false
+            referencedRelation: "bikes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      locations: {
+        Row: {
+          address: string
+          available_bikes: number
+          city: string
+          created_at: string
+          id: string
+          latitude: number | null
+          longitude: number | null
+          name: string
+          state: string
+          total_bikes: number
+          zip_code: string | null
+        }
+        Insert: {
+          address: string
+          available_bikes?: number
+          city: string
+          created_at?: string
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          name: string
+          state: string
+          total_bikes?: number
+          zip_code?: string | null
+        }
+        Update: {
+          address?: string
+          available_bikes?: number
+          city?: string
+          created_at?: string
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          name?: string
+          state?: string
+          total_bikes?: number
+          zip_code?: string | null
         }
         Relationships: []
       }
@@ -205,6 +329,63 @@ export type Database = {
           zip_code?: string | null
         }
         Relationships: []
+      }
+      rentals: {
+        Row: {
+          bike_id: string
+          created_at: string
+          end_time: string
+          id: string
+          location_id: string
+          start_time: string
+          status: string
+          total_hours: number
+          total_price: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bike_id: string
+          created_at?: string
+          end_time: string
+          id?: string
+          location_id: string
+          start_time: string
+          status?: string
+          total_hours: number
+          total_price: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bike_id?: string
+          created_at?: string
+          end_time?: string
+          id?: string
+          location_id?: string
+          start_time?: string
+          status?: string
+          total_hours?: number
+          total_price?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rentals_bike_id_fkey"
+            columns: ["bike_id"]
+            isOneToOne: false
+            referencedRelation: "bikes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rentals_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
