@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Star, Heart, MapPin, Battery, Zap } from 'lucide-react';
+import { Star, Heart, MapPin, Battery, Zap, Bike } from 'lucide-react';
 
 interface BikeCardProps {
   bike: {
@@ -31,7 +31,7 @@ const BikeCard = ({ bike, isFavorited = false, onFavoriteToggle }: BikeCardProps
 
   const handleRent = () => {
     if (!bike.available) return;
-    navigate(`/rent?bikeId=${bike.id}`);
+    navigate(`/rent?bikeId=${bike.id}&bikeName=${encodeURIComponent(bike.name)}&pricePerDay=${bike.price}`);
   };
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
@@ -43,21 +43,23 @@ const BikeCard = ({ bike, isFavorited = false, onFavoriteToggle }: BikeCardProps
 
   const getTypeColor = (type: string) => {
     switch (type.toLowerCase()) {
-      case 'electric':
-        return 'bg-accent text-accent-foreground';
-      case 'mountain':
+      case 'electric scooter':
         return 'bg-green-500 text-white';
-      case 'city':
-        return 'bg-blue-500 text-white';
-      case 'hybrid':
+      case 'cruiser':
         return 'bg-purple-500 text-white';
+      case 'sports':
+        return 'bg-red-500 text-white';
+      case 'scooter':
+        return 'bg-blue-500 text-white';
+      case 'commuter':
+        return 'bg-gray-500 text-white';
       default:
         return 'bg-secondary text-secondary-foreground';
     }
   };
 
   return (
-    <Card className="group hover-lift bg-card border overflow-hidden h-full flex flex-col">
+    <Card className="group hover-lift bg-card border overflow-hidden h-full flex flex-col hover:shadow-lg transition-all duration-300">
       <div className="relative">
         {/* Bike Image */}
         <div className="aspect-video bg-gradient-to-br from-muted/50 to-muted relative overflow-hidden">
@@ -70,7 +72,7 @@ const BikeCard = ({ bike, isFavorited = false, onFavoriteToggle }: BikeCardProps
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center">
-                <span className="text-3xl">🚴</span>
+                <Bike className="text-4xl text-primary" size={48} />
               </div>
             </div>
           )}
@@ -79,7 +81,7 @@ const BikeCard = ({ bike, isFavorited = false, onFavoriteToggle }: BikeCardProps
           <div className="absolute top-3 left-3 flex flex-col gap-2">
             <Badge className={getTypeColor(bike.type)}>
               {bike.electric && <Zap className="h-3 w-3 mr-1" />}
-              {bike.type.charAt(0).toUpperCase() + bike.type.slice(1)}
+              {bike.type}
             </Badge>
             {!bike.available && (
               <Badge variant="destructive">Unavailable</Badge>
@@ -105,7 +107,7 @@ const BikeCard = ({ bike, isFavorited = false, onFavoriteToggle }: BikeCardProps
           {/* Battery Level for Electric Bikes */}
           {bike.electric && bike.batteryLevel && (
             <div className="absolute bottom-3 right-3 bg-background/90 backdrop-blur-sm rounded-lg px-2 py-1 flex items-center gap-1">
-              <Battery className="h-3 w-3 text-primary" />
+              <Battery className="h-3 w-3 text-green-500" />
               <span className="text-xs font-medium">{bike.batteryLevel}%</span>
             </div>
           )}
@@ -119,11 +121,11 @@ const BikeCard = ({ bike, isFavorited = false, onFavoriteToggle }: BikeCardProps
             <h3 className="font-semibold text-lg text-foreground group-hover:text-primary transition-colors line-clamp-1">
               {bike.name}
             </h3>
-            <p className="text-sm text-muted-foreground capitalize">{bike.type}</p>
+            <p className="text-sm text-muted-foreground">{bike.type}</p>
           </div>
           <div className="text-right ml-2">
             <div className="font-bold text-lg text-primary">
-              ${bike.price}<span className="text-sm font-normal text-muted-foreground">/hr</span>
+              ₹{bike.price}<span className="text-sm font-normal text-muted-foreground">/day</span>
             </div>
           </div>
         </div>
@@ -160,7 +162,7 @@ const BikeCard = ({ bike, isFavorited = false, onFavoriteToggle }: BikeCardProps
           onClick={handleRent}
           disabled={!bike.available || isLoading}
           className={`w-full ${bike.available 
-            ? 'gradient-primary text-white hover:opacity-90' 
+            ? 'bg-primary text-white hover:bg-primary/90' 
             : 'bg-muted text-muted-foreground cursor-not-allowed'
           }`}
         >
@@ -170,7 +172,7 @@ const BikeCard = ({ bike, isFavorited = false, onFavoriteToggle }: BikeCardProps
               Loading...
             </div>
           ) : bike.available ? (
-            'Rent Now'
+            'Book Now'
           ) : (
             'Unavailable'
           )}

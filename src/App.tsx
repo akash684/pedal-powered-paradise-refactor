@@ -12,6 +12,8 @@ import About from "./pages/About";
 import Auth from "./pages/Auth";
 import Favorites from "./pages/Favorites";
 import Rent from "./pages/Rent";
+import Payment from "./pages/Payment";
+import BookingSuccess from "./pages/BookingSuccess";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
 
@@ -36,11 +38,9 @@ const App = () => (
                 <Favorites />
               </ProtectedRoute>
             } />
-            <Route path="/rent" element={
-              <ProtectedRoute>
-                <Rent />
-              </ProtectedRoute>
-            } />
+            <Route path="/rent" element={<Rent />} />
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/booking-success" element={<BookingSuccess />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

@@ -12,96 +12,96 @@ const BikeGallery = () => {
   const [priceRange, setPriceRange] = useState<string>('all');
   const [showFilters, setShowFilters] = useState(false);
 
-  // Mock bike data
+  // Updated bike data with Indian names and INR pricing
   const bikes = [
     {
       id: '1',
-      name: 'Urban Cruiser',
-      type: 'City Bike',
-      price: 8,
+      name: 'Honda Activa 6G',
+      type: 'Scooter',
+      price: 450,
       rating: 4.5,
       reviews: 127,
       image: '',
-      location: 'Downtown',
+      location: 'Mumbai Central',
       available: true,
-      features: ['Comfortable Seat', 'LED Lights', 'Basket'],
+      features: ['Electric Start', 'LED Headlight', 'Under Seat Storage'],
       electric: false,
     },
     {
       id: '2',
-      name: 'Thunder Bolt E-Bike',
-      type: 'Electric Bike',
-      price: 15,
+      name: 'TVS iQube Electric',
+      type: 'Electric Scooter',
+      price: 800,
       rating: 4.8,
       reviews: 89,
       image: '',
-      location: 'Park Ave',
+      location: 'Bangalore Koramangala',
       available: true,
-      features: ['Fast Charging', 'GPS Tracking', 'Anti-Theft'],
+      features: ['Smart Connect', 'GPS Navigation', 'Fast Charging'],
       electric: true,
       batteryLevel: 85,
     },
     {
       id: '3',
-      name: 'Mountain Explorer',
-      type: 'Mountain Bike',
-      price: 12,
+      name: 'Royal Enfield Classic 350',
+      type: 'Cruiser',
+      price: 1200,
       rating: 4.6,
       reviews: 203,
       image: '',
-      location: 'Trail Head',
+      location: 'Delhi Connaught Place',
       available: true,
-      features: ['Shock Absorption', 'All-Terrain', 'Water Bottle'],
+      features: ['Vintage Style', 'Long Range', 'Comfortable Ride'],
       electric: false,
     },
     {
       id: '4',
-      name: 'Speed Demon',
-      type: 'Road Bike',
-      price: 10,
+      name: 'Bajaj Pulsar NS200',
+      type: 'Sports',
+      price: 900,
       rating: 4.3,
       reviews: 156,
       image: '',
-      location: 'City Center',
+      location: 'Pune FC Road',
       available: false,
-      features: ['Lightweight', 'Drop Handlebars', 'Racing Tires'],
+      features: ['Sporty Design', 'Performance Engine', 'Digital Console'],
       electric: false,
     },
     {
       id: '5',
-      name: 'Eco Commuter',
-      type: 'Electric Bike',
-      price: 18,
+      name: 'Ather 450X',
+      type: 'Electric Scooter',
+      price: 950,
       rating: 4.7,
       reviews: 92,
       image: '',
-      location: 'Metro Station',
+      location: 'Chennai T Nagar',
       available: true,
-      features: ['Long Range', 'Quick Fold', 'USB Charging'],
+      features: ['Fast Charging', 'Smart Dashboard', 'Long Range'],
       electric: true,
       batteryLevel: 92,
     },
     {
       id: '6',
-      name: 'Family Cruiser',
-      type: 'Family Bike',
-      price: 14,
+      name: 'Hero Splendor Plus',
+      type: 'Commuter',
+      price: 350,
       rating: 4.4,
       reviews: 78,
       image: '',
-      location: 'Beach Side',
+      location: 'Hyderabad Banjara Hills',
       available: true,
-      features: ['Child Seat', 'Extra Storage', 'Stability'],
+      features: ['Fuel Efficient', 'Low Maintenance', 'Reliable'],
       electric: false,
     },
   ];
 
-  const bikeTypes = ['all', 'City Bike', 'Electric Bike', 'Mountain Bike', 'Road Bike', 'Family Bike'];
+  const bikeTypes = ['all', 'Scooter', 'Electric Scooter', 'Cruiser', 'Sports', 'Commuter'];
   const priceRanges = [
     { label: 'All Prices', value: 'all' },
-    { label: 'Under $10', value: '0-10' },
-    { label: '$10 - $15', value: '10-15' },
-    { label: 'Over $15', value: '15+' },
+    { label: 'Under ₹500', value: '0-500' },
+    { label: '₹500 - ₹800', value: '500-800' },
+    { label: 'Over ₹800', value: '800+' },
   ];
 
   const filteredBikes = useMemo(() => {
@@ -114,9 +114,9 @@ const BikeGallery = () => {
       
       const matchesPrice = (() => {
         if (priceRange === 'all') return true;
-        if (priceRange === '0-10') return bike.price <= 10;
-        if (priceRange === '10-15') return bike.price > 10 && bike.price <= 15;
-        if (priceRange === '15+') return bike.price > 15;
+        if (priceRange === '0-500') return bike.price <= 500;
+        if (priceRange === '500-800') return bike.price > 500 && bike.price <= 800;
+        if (priceRange === '800+') return bike.price > 800;
         return true;
       })();
 
@@ -133,7 +133,7 @@ const BikeGallery = () => {
             Find Your Perfect Bike
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Choose from our diverse fleet of well-maintained bikes, perfect for every adventure
+            Choose from India's most popular bikes with affordable daily rental rates
           </p>
         </div>
 
