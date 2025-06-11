@@ -9,10 +9,16 @@ const Hero = () => {
   const [location, setLocation] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
+  const [detectedCity, setDetectedCity] = useState<string | null>(null);
 
   const handleSearch = () => {
-    console.log('Searching bikes:', { location, date, time });
+    console.log('Searching bikes:', { location: detectedCity || location, date, time });
     // Here you would typically trigger a search or navigation
+  };
+
+  const handleLocationDetected = (city: string) => {
+    setDetectedCity(city);
+    setLocation(city);
   };
 
   return (
@@ -41,6 +47,11 @@ const Hero = () => {
 
           {/* Search Card */}
           <Card className="p-6 md:p-8 bg-white/80 backdrop-blur-sm border-0 shadow-2xl animate-scale-in max-w-3xl mx-auto">
+            {/* Location Detection */}
+            <div className="mb-6">
+              <LocationDetector onLocationDetected={handleLocationDetected} />
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               {/* Location */}
               <div className="relative">
@@ -50,7 +61,7 @@ const Hero = () => {
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                   <Input
-                    placeholder="Where to pickup?"
+                    placeholder={detectedCity || "Where to pickup?"}
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                     className="pl-10 h-12"
@@ -111,8 +122,8 @@ const Hero = () => {
               <div className="text-muted-foreground">Bikes Available</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-primary mb-2">50+</div>
-              <div className="text-muted-foreground">Pickup Locations</div>
+              <div className="text-3xl md:text-4xl font-bold text-primary mb-2">8+</div>
+              <div className="text-muted-foreground">Indian Cities</div>
             </div>
             <div className="text-center">
               <div className="text-3xl md:text-4xl font-bold text-primary mb-2">24/7</div>
