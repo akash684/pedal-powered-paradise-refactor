@@ -6,8 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useToast } from '@/hooks/use-toast';
-import { Calendar, Clock, MapPin, IndianRupee, Bike } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, MapPin, Bike, CreditCard } from 'lucide-react';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 const Rent = () => {
   const navigate = useNavigate();
@@ -20,8 +24,8 @@ const Rent = () => {
   const pricePerDay = parseInt(searchParams.get('pricePerDay') || '500');
 
   const [rentalData, setRentalData] = useState({
-    startDate: '',
-    endDate: '',
+    startDate: null as Date | null,
+    endDate: null as Date | null,
     startTime: '09:00',
     endTime: '18:00',
     days: 1
@@ -43,15 +47,13 @@ const Rent = () => {
   useEffect(() => {
     // Calculate days when dates change
     if (rentalData.startDate && rentalData.endDate) {
-      const start = new Date(rentalData.startDate);
-      const end = new Date(rentalData.endDate);
-      const diffTime = Math.abs(end.getTime() - start.getTime());
+      const diffTime = Math.abs(rentalData.endDate.getTime() - rentalData.startDate.getTime());
       const diffDays = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
       setRentalData(prev => ({ ...prev, days: diffDays }));
     }
   }, [rentalData.startDate, rentalData.endDate]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setRentalData(prev => ({
       ...prev,
@@ -60,7 +62,8 @@ const Rent = () => {
   };
 
   const validateDates = () => {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     
     if (!rentalData.startDate || !rentalData.endDate) {
       toast({
@@ -107,8 +110,8 @@ const Rent = () => {
         bikeName,
         pricePerDay: pricePerDay.toString(),
         days: rentalData.days.toString(),
-        startDate: rentalData.startDate,
-        endDate: rentalData.endDate
+        startDate: rentalData.startDate!.toISOString(),
+        endDate: rentalData.endDate!.toISOString()
       });
 
       navigate(`/payment?${params.toString()}`);
@@ -117,10 +120,23 @@ const Rent = () => {
 
   const totalPrice = pricePerDay * rentalData.days;
   const gst = Math.round(totalPrice * 0.18);
-  const finalTotal = totalPrice + gst;
+  const securityDeposit = Math.round(pricePerDay * 0.5);
+  const finalTotal = totalPrice + gst + securityDeposit;
 
   // Set minimum date to today
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date();
+
+  // Popular pickup locations in India
+  const pickupLocations = [
+    'Chennai Central - Express Avenue Mall',
+    'Bengaluru Koramangala - Forum Mall',
+    'Delhi Connaught Place - Rajiv Chowk Metro',
+    'Hyderabad Banjara Hills - GVK One Mall',
+    'Kochi Marine Drive - High Court Junction',
+    'Pune FC Road - Fergusson College',
+    'Kolkata Park Street - Park Hotel',
+    'Mumbai Bandra West - Hill Road'
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -136,13 +152,13 @@ const Rent = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Calendar className="h-5 w-5" />
+                  <CalendarIcon className="h-5 w-5" />
                   Rental Details
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Selected Bike */}
-                <div className="p-4 bg-blue-50 rounded-lg">
+                <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                       <Bike className="h-6 w-6 text-blue-600" />
@@ -154,31 +170,61 @@ const Rent = () => {
                   </div>
                 </div>
 
-                {/* Date Selection */}
+                {/* Date Selection with Calendar */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="startDate">Start Date *</Label>
-                    <Input
-                      id="startDate"
-                      name="startDate"
-                      type="date"
-                      value={rentalData.startDate}
-                      onChange={handleInputChange}
-                      min={today}
-                      required
-                    />
+                    <Label>Start Date *</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !rentalData.startDate && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {rentalData.startDate ? format(rentalData.startDate, "PPP") : "Pick start date"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={rentalData.startDate || undefined}
+                          onSelect={(date) => setRentalData(prev => ({ ...prev, startDate: date || null }))}
+                          disabled={(date) => date < today}
+                          initialFocus
+                          className="pointer-events-auto"
+                        />
+                      </PopoverContent>
+                    </Popover>
                   </div>
                   <div>
-                    <Label htmlFor="endDate">End Date *</Label>
-                    <Input
-                      id="endDate"
-                      name="endDate"
-                      type="date"
-                      value={rentalData.endDate}
-                      onChange={handleInputChange}
-                      min={rentalData.startDate || today}
-                      required
-                    />
+                    <Label>End Date *</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !rentalData.endDate && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {rentalData.endDate ? format(rentalData.endDate, "PPP") : "Pick end date"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={rentalData.endDate || undefined}
+                          onSelect={(date) => setRentalData(prev => ({ ...prev, endDate: date || null }))}
+                          disabled={(date) => date < (rentalData.startDate || today)}
+                          initialFocus
+                          className="pointer-events-auto"
+                        />
+                      </PopoverContent>
+                    </Popover>
                   </div>
                 </div>
 
@@ -191,7 +237,7 @@ const Rent = () => {
                       name="startTime"
                       type="time"
                       value={rentalData.startTime}
-                      onChange={handleInputChange}
+                      onChange={handleTimeChange}
                     />
                   </div>
                   <div>
@@ -201,14 +247,14 @@ const Rent = () => {
                       name="endTime"
                       type="time"
                       value={rentalData.endTime}
-                      onChange={handleInputChange}
+                      onChange={handleTimeChange}
                     />
                   </div>
                 </div>
 
                 {/* Duration Display */}
                 {rentalData.days > 0 && (
-                  <div className="p-4 bg-green-50 rounded-lg">
+                  <div className="p-4 bg-green-50 rounded-lg border border-green-200">
                     <div className="flex items-center gap-2">
                       <Clock className="h-5 w-5 text-green-600" />
                       <span className="font-medium text-green-800">
@@ -219,19 +265,20 @@ const Rent = () => {
                 )}
 
                 {/* Important Notes */}
-                <div className="p-4 bg-amber-50 rounded-lg">
+                <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
                   <h4 className="font-medium text-amber-800 mb-2">Important Notes:</h4>
                   <ul className="text-sm text-amber-700 space-y-1">
-                    <li>• Valid driving license required at pickup</li>
-                    <li>• Security deposit may be required</li>
-                    <li>• Fuel charges not included</li>
-                    <li>• Late return charges apply after grace period</li>
+                    <li>• Valid Indian driving license required at pickup</li>
+                    <li>• Security deposit will be refunded after bike return</li>
+                    <li>• Fuel charges not included in rental price</li>
+                    <li>• Late return charges: ₹50 per hour after grace period</li>
+                    <li>• Free helmet and basic insurance included</li>
                   </ul>
                 </div>
 
                 <Button 
                   onClick={handleProceedToPayment}
-                  className="w-full h-12 text-lg"
+                  className="w-full h-12 text-lg bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
                   disabled={isLoading || !rentalData.startDate || !rentalData.endDate}
                 >
                   {isLoading ? (
@@ -241,7 +288,7 @@ const Rent = () => {
                     </div>
                   ) : (
                     <>
-                      <IndianRupee className="h-5 w-5 mr-2" />
+                      <CreditCard className="h-5 w-5 mr-2" />
                       Proceed to Payment
                     </>
                   )}
@@ -274,13 +321,20 @@ const Rent = () => {
                     <span>GST (18%)</span>
                     <span>₹{gst}</span>
                   </div>
+                  <div className="flex justify-between text-sm text-muted-foreground">
+                    <span>Security Deposit</span>
+                    <span>₹{securityDeposit}</span>
+                  </div>
                 </div>
 
                 <div className="border-t pt-4">
                   <div className="flex justify-between font-semibold text-lg">
-                    <span>Total</span>
+                    <span>Total Amount</span>
                     <span>₹{finalTotal}</span>
                   </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    (Security deposit refundable)
+                  </p>
                 </div>
 
                 {/* Pickup Locations */}
@@ -289,12 +343,20 @@ const Rent = () => {
                     <MapPin className="h-4 w-4" />
                     Available Pickup Locations
                   </h4>
-                  <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Connaught Place, Delhi</li>
-                    <li>• Koramangala, Bangalore</li>
-                    <li>• Bandra West, Mumbai</li>
-                    <li>• Park Street, Kolkata</li>
+                  <ul className="text-xs text-muted-foreground space-y-1">
+                    {pickupLocations.slice(0, 4).map((location, index) => (
+                      <li key={index}>• {location}</li>
+                    ))}
                   </ul>
+                  <p className="text-xs text-muted-foreground mt-2 font-medium">
+                    + 4 more locations across India
+                  </p>
+                </div>
+
+                <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                  <p className="text-sm text-blue-800 font-medium">
+                    🎉 Special Offer: Book for 3+ days and get 10% discount!
+                  </p>
                 </div>
               </CardContent>
             </Card>

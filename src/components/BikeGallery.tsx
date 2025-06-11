@@ -12,96 +12,122 @@ const BikeGallery = () => {
   const [priceRange, setPriceRange] = useState<string>('all');
   const [showFilters, setShowFilters] = useState(false);
 
-  // Updated bike data with Indian names and INR pricing
+  // Updated bike data with popular Indian bikes and Indian cities
   const bikes = [
     {
       id: '1',
       name: 'Honda Activa 6G',
       type: 'Scooter',
-      price: 450,
+      price: 400,
       rating: 4.5,
       reviews: 127,
-      image: '',
-      location: 'Mumbai Central',
+      image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=300',
+      location: 'Chennai Central',
       available: true,
-      features: ['Electric Start', 'LED Headlight', 'Under Seat Storage'],
+      features: ['Electric Start', 'LED Headlight', 'Under Seat Storage', 'Fuel Efficient'],
       electric: false,
     },
     {
       id: '2',
-      name: 'TVS iQube Electric',
-      type: 'Electric Scooter',
-      price: 800,
-      rating: 4.8,
+      name: 'TVS Apache RTR 160',
+      type: 'Sports',
+      price: 600,
+      rating: 4.3,
       reviews: 89,
-      image: '',
-      location: 'Bangalore Koramangala',
+      image: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=500&h=300',
+      location: 'Bengaluru Koramangala',
       available: true,
-      features: ['Smart Connect', 'GPS Navigation', 'Fast Charging'],
-      electric: true,
-      batteryLevel: 85,
+      features: ['Performance Engine', 'Digital Console', 'Racing DNA', 'ABS'],
+      electric: false,
     },
     {
       id: '3',
       name: 'Royal Enfield Classic 350',
       type: 'Cruiser',
-      price: 1200,
+      price: 900,
       rating: 4.6,
       reviews: 203,
-      image: '',
+      image: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=500&h=300',
       location: 'Delhi Connaught Place',
       available: true,
-      features: ['Vintage Style', 'Long Range', 'Comfortable Ride'],
+      features: ['Vintage Style', 'Long Range', 'Comfortable Ride', 'Classic Design'],
       electric: false,
     },
     {
       id: '4',
-      name: 'Bajaj Pulsar NS200',
+      name: 'Bajaj Pulsar 150',
       type: 'Sports',
-      price: 900,
-      rating: 4.3,
+      price: 550,
+      rating: 4.2,
       reviews: 156,
-      image: '',
-      location: 'Pune FC Road',
+      image: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=500&h=300',
+      location: 'Hyderabad Banjara Hills',
       available: false,
-      features: ['Sporty Design', 'Performance Engine', 'Digital Console'],
+      features: ['Sporty Design', 'Twin Spark Engine', 'ExhausTEC', 'Digital Console'],
       electric: false,
     },
     {
       id: '5',
-      name: 'Ather 450X',
-      type: 'Electric Scooter',
-      price: 950,
-      rating: 4.7,
+      name: 'Yamaha FZ-S',
+      type: 'Street',
+      price: 650,
+      rating: 4.4,
       reviews: 92,
-      image: '',
-      location: 'Chennai T Nagar',
+      image: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=500&h=300',
+      location: 'Kochi Marine Drive',
       available: true,
-      features: ['Fast Charging', 'Smart Dashboard', 'Long Range'],
-      electric: true,
-      batteryLevel: 92,
+      features: ['Fuel Injection', 'LED Lighting', 'Single Channel ABS', 'Muscular Design'],
+      electric: false,
     },
     {
       id: '6',
+      name: 'TVS iQube Electric',
+      type: 'Electric Scooter',
+      price: 750,
+      rating: 4.7,
+      reviews: 78,
+      image: 'https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=500&h=300',
+      location: 'Pune FC Road',
+      available: true,
+      features: ['Smart Connect', 'GPS Navigation', 'Fast Charging', 'Zero Emission'],
+      electric: true,
+      batteryLevel: 85,
+    },
+    {
+      id: '7',
       name: 'Hero Splendor Plus',
       type: 'Commuter',
       price: 350,
-      rating: 4.4,
-      reviews: 78,
-      image: '',
-      location: 'Hyderabad Banjara Hills',
+      rating: 4.1,
+      reviews: 164,
+      image: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=500&h=300',
+      location: 'Kolkata Park Street',
       available: true,
-      features: ['Fuel Efficient', 'Low Maintenance', 'Reliable'],
+      features: ['Fuel Efficient', 'Low Maintenance', 'Reliable', 'Comfortable Seat'],
       electric: false,
+    },
+    {
+      id: '8',
+      name: 'Ather 450X',
+      type: 'Electric Scooter',
+      price: 800,
+      rating: 4.8,
+      reviews: 115,
+      image: 'https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=500&h=300',
+      location: 'Mumbai Bandra West',
+      available: true,
+      features: ['Fast Charging', 'Smart Dashboard', 'Long Range', 'Premium Build'],
+      electric: true,
+      batteryLevel: 92,
     },
   ];
 
-  const bikeTypes = ['all', 'Scooter', 'Electric Scooter', 'Cruiser', 'Sports', 'Commuter'];
+  const bikeTypes = ['all', 'Scooter', 'Sports', 'Cruiser', 'Street', 'Electric Scooter', 'Commuter'];
   const priceRanges = [
     { label: 'All Prices', value: 'all' },
     { label: 'Under ₹500', value: '0-500' },
-    { label: '₹500 - ₹800', value: '500-800' },
-    { label: 'Over ₹800', value: '800+' },
+    { label: '₹500 - ₹700', value: '500-700' },
+    { label: 'Over ₹700', value: '700+' },
   ];
 
   const filteredBikes = useMemo(() => {
@@ -115,8 +141,8 @@ const BikeGallery = () => {
       const matchesPrice = (() => {
         if (priceRange === 'all') return true;
         if (priceRange === '0-500') return bike.price <= 500;
-        if (priceRange === '500-800') return bike.price > 500 && bike.price <= 800;
-        if (priceRange === '800+') return bike.price > 800;
+        if (priceRange === '500-700') return bike.price > 500 && bike.price <= 700;
+        if (priceRange === '700+') return bike.price > 700;
         return true;
       })();
 
@@ -130,10 +156,10 @@ const BikeGallery = () => {
         {/* Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Find Your Perfect Bike
+            Rent Your Perfect Bike in India
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Choose from India's most popular bikes with affordable daily rental rates
+            Choose from India's most popular bikes with affordable daily rental rates across major cities
           </p>
         </div>
 
@@ -144,7 +170,7 @@ const BikeGallery = () => {
             <div className="relative flex-1 w-full lg:max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
-                placeholder="Search bikes, types, or locations..."
+                placeholder="Search bikes, types, or cities..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 h-12"
