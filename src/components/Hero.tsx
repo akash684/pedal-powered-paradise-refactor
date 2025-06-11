@@ -1,9 +1,9 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { MapPin, Search, Calendar, Clock } from 'lucide-react';
+import LocationDetector from '@/components/LocationDetector';
 
 const Hero = () => {
   const [location, setLocation] = useState('');
