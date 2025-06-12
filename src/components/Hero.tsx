@@ -1,8 +1,9 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
-import { MapPin, Search, Calendar, Clock } from 'lucide-react';
+import { MapPin, Search, Calendar, Clock, IndianRupee } from 'lucide-react';
 import LocationDetector from '@/components/LocationDetector';
 
 const Hero = () => {
@@ -14,6 +15,7 @@ const Hero = () => {
   const handleSearch = () => {
     console.log('Searching bikes:', { location: detectedCity || location, date, time });
     // Here you would typically trigger a search or navigation
+    window.location.href = '/bikes';
   };
 
   const handleLocationDetected = (city: string) => {
@@ -34,14 +36,14 @@ const Hero = () => {
           {/* Hero Content */}
           <div className="animate-slide-in">
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6">
-              <span className="text-foreground">Ride the</span>
+              <span className="text-foreground">Rent Premium</span>
               <br />
-              <span className="gradient-primary bg-clip-text text-transparent">Perfect Bike</span>
+              <span className="gradient-primary bg-clip-text text-transparent">Indian Bikes</span>
             </h1>
             
             <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Discover eco-friendly transportation with our premium bike rental service. 
-              From city cruisers to mountain bikes, find your perfect ride today.
+              Discover India's most popular bikes for rent across major cities. 
+              From Hero Splendor to Royal Enfield, find your perfect ride today.
             </p>
           </div>
 
@@ -56,16 +58,27 @@ const Hero = () => {
               {/* Location */}
               <div className="relative">
                 <label className="block text-sm font-medium text-muted-foreground mb-2">
-                  Location
+                  City
                 </label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                   <Input
-                    placeholder={detectedCity || "Where to pickup?"}
+                    placeholder={detectedCity || "Select city..."}
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                     className="pl-10 h-12"
+                    list="indian-cities"
                   />
+                  <datalist id="indian-cities">
+                    <option value="Mumbai" />
+                    <option value="Delhi" />
+                    <option value="Bengaluru" />
+                    <option value="Hyderabad" />
+                    <option value="Chennai" />
+                    <option value="Pune" />
+                    <option value="Ahmedabad" />
+                    <option value="Kochi" />
+                  </datalist>
                 </div>
               </div>
 
@@ -109,7 +122,7 @@ const Hero = () => {
                   size="lg"
                 >
                   <Search className="h-4 w-4 mr-2" />
-                  Search
+                  Find Bikes
                 </Button>
               </div>
             </div>
@@ -118,7 +131,10 @@ const Hero = () => {
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16 animate-fade-in">
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-primary mb-2">500+</div>
+              <div className="text-3xl md:text-4xl font-bold text-primary mb-2 flex items-center justify-center">
+                <IndianRupee className="h-8 w-8 mr-1" />
+                500+
+              </div>
               <div className="text-muted-foreground">Bikes Available</div>
             </div>
             <div className="text-center">

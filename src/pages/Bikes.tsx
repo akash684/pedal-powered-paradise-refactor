@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Search, Filter, SlidersHorizontal } from 'lucide-react';
+import { Search, Filter, SlidersHorizontal, IndianRupee } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface Bike {
@@ -70,7 +70,7 @@ const Bikes = () => {
       const { data, error } = await supabase
         .from('locations')
         .select('id, name, city, state')
-        .order('name');
+        .order('city');
       
       if (error) throw error;
       return data as Location[];
@@ -277,9 +277,12 @@ const Bikes = () => {
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-foreground mb-4">Available Bikes</h1>
+        <h1 className="text-4xl font-bold text-foreground mb-4">
+          <IndianRupee className="inline h-8 w-8 mr-2" />
+          Bike Rentals in India
+        </h1>
         <p className="text-lg text-muted-foreground">
-          Find the perfect bike for your next adventure
+          Rent premium bikes across major Indian cities at affordable rates
         </p>
       </div>
 
@@ -305,23 +308,25 @@ const Bikes = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="commuter">Commuter</SelectItem>
+              <SelectItem value="sports">Sports</SelectItem>
+              <SelectItem value="cruiser">Cruiser</SelectItem>
+              <SelectItem value="scooter">Scooter</SelectItem>
+              <SelectItem value="street">Street</SelectItem>
               <SelectItem value="electric">Electric</SelectItem>
-              <SelectItem value="mountain">Mountain</SelectItem>
-              <SelectItem value="city">City</SelectItem>
-              <SelectItem value="hybrid">Hybrid</SelectItem>
             </SelectContent>
           </Select>
 
           {/* Location Filter */}
           <Select value={selectedLocation} onValueChange={setSelectedLocation}>
             <SelectTrigger>
-              <SelectValue placeholder="Location" />
+              <SelectValue placeholder="City" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Locations</SelectItem>
+              <SelectItem value="all">All Cities</SelectItem>
               {locations?.map((location) => (
                 <SelectItem key={location.id} value={location.id}>
-                  {location.name} - {location.city}
+                  {location.city}, {location.state}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -372,7 +377,8 @@ const Bikes = () => {
             Clear Filters
           </Button>
 
-          <div className="ml-auto text-sm text-muted-foreground">
+          <div className="ml-auto text-sm text-muted-foreground flex items-center">
+            <IndianRupee className="h-4 w-4 mr-1" />
             {processedBikes.length} bikes found
           </div>
         </div>
@@ -405,7 +411,7 @@ const Bikes = () => {
                   rating: 4.5, // Mock rating - you can add this to your schema later
                   reviews: Math.floor(Math.random() * 100) + 10, // Mock reviews
                   image: bike.image_url || '',
-                  location: bike.locations ? `${bike.locations.name}, ${bike.locations.city}` : 'Unknown',
+                  location: bike.locations ? `${bike.locations.city}, ${bike.locations.state}` : 'Unknown',
                   available: bike.available,
                   features: bike.features || [],
                   electric: bike.type === 'electric',

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Star, Heart, MapPin, Battery, Zap, Bike } from 'lucide-react';
+import { Star, Heart, MapPin, Battery, Zap, Bike, IndianRupee } from 'lucide-react';
 
 interface BikeCardProps {
   bike: {
@@ -31,7 +31,7 @@ const BikeCard = ({ bike, isFavorited = false, onFavoriteToggle }: BikeCardProps
 
   const handleRent = () => {
     if (!bike.available) return;
-    navigate(`/rent?bikeId=${bike.id}&bikeName=${encodeURIComponent(bike.name)}&pricePerDay=${bike.price}`);
+    navigate(`/rent?bikeId=${bike.id}&bikeName=${encodeURIComponent(bike.name)}&pricePerHour=${bike.price}`);
   };
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
@@ -43,7 +43,7 @@ const BikeCard = ({ bike, isFavorited = false, onFavoriteToggle }: BikeCardProps
 
   const getTypeColor = (type: string) => {
     switch (type.toLowerCase()) {
-      case 'electric scooter':
+      case 'electric':
         return 'bg-green-500 text-white';
       case 'cruiser':
         return 'bg-purple-500 text-white';
@@ -53,6 +53,8 @@ const BikeCard = ({ bike, isFavorited = false, onFavoriteToggle }: BikeCardProps
         return 'bg-blue-500 text-white';
       case 'commuter':
         return 'bg-gray-500 text-white';
+      case 'street':
+        return 'bg-orange-500 text-white';
       default:
         return 'bg-secondary text-secondary-foreground';
     }
@@ -68,20 +70,27 @@ const BikeCard = ({ bike, isFavorited = false, onFavoriteToggle }: BikeCardProps
               src={bike.image} 
               alt={bike.name}
               className="w-full h-full object-cover"
+              onError={(e) => {
+                // Fallback to bike icon if image fails to load
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
+                target.parentElement?.classList.add('flex', 'items-center', 'justify-center');
+              }}
             />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center">
-                <Bike className="text-4xl text-primary" size={48} />
-              </div>
+          ) : null}
+          
+          {/* Fallback icon when no image or image fails */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center">
+              <Bike className="text-4xl text-primary" size={48} />
             </div>
-          )}
+          </div>
           
           {/* Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-2">
             <Badge className={getTypeColor(bike.type)}>
               {bike.electric && <Zap className="h-3 w-3 mr-1" />}
-              {bike.type}
+              {bike.type.charAt(0).toUpperCase() + bike.type.slice(1)}
             </Badge>
             {!bike.available && (
               <Badge variant="destructive">Unavailable</Badge>
@@ -121,11 +130,13 @@ const BikeCard = ({ bike, isFavorited = false, onFavoriteToggle }: BikeCardProps
             <h3 className="font-semibold text-lg text-foreground group-hover:text-primary transition-colors line-clamp-1">
               {bike.name}
             </h3>
-            <p className="text-sm text-muted-foreground">{bike.type}</p>
+            <p className="text-sm text-muted-foreground capitalize">{bike.type}</p>
           </div>
           <div className="text-right ml-2">
-            <div className="font-bold text-lg text-primary">
-              ₹{bike.price}<span className="text-sm font-normal text-muted-foreground">/day</span>
+            <div className="font-bold text-lg text-primary flex items-center">
+              <IndianRupee className="h-4 w-4" />
+              {bike.price}
+              <span className="text-sm font-normal text-muted-foreground ml-1">/hour</span>
             </div>
           </div>
         </div>
@@ -172,7 +183,10 @@ const BikeCard = ({ bike, isFavorited = false, onFavoriteToggle }: BikeCardProps
               Loading...
             </div>
           ) : bike.available ? (
-            'Book Now'
+            <>
+              <IndianRupee className="h-4 w-4 mr-2" />
+              Rent Now
+            </>
           ) : (
             'Unavailable'
           )}
