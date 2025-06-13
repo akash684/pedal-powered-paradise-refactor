@@ -78,13 +78,7 @@ const BikeCard = ({ bike, isFavorited = false, onFavoriteToggle }: BikeCardProps
               }}
             />
           ) : null}
-          
-          {/* Fallback icon when no image or image fails */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center">
-              <Bike className="text-4xl text-primary" size={48} />
-            </div>
-          </div>
+        
           
           {/* Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-2">
